@@ -18,7 +18,7 @@ const ProductCreate: React.FC = () => {
   const [showForm, setShowForm] = useState<boolean>(false);
   const router = useRouter();
 
-  const [newProduct, setNewProduct] = useState<FormattedProduct | null>(null);
+  const [newProduct, setNewProduct] = useState<typeof FormattedProduct | null>(null);
 
   const mutation = useMutation(async (newProduct: FormattedProduct) => {
     try {
