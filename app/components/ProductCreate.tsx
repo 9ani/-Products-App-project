@@ -5,6 +5,14 @@ import { useMutation } from 'react-query';
 import { useRouter } from 'next/navigation';
 import ProductsList from './ProductsList';
 import  FormattedProduct  from './ProductCreate';
+export type FormattedProduct = {
+  id: number;
+  title: string;
+  price: number;
+  description: string;
+  image: string;
+  category: string;
+};
 
 const ProductCreate: React.FC = () => {
   const [title, setTitle] = useState<string>('');
