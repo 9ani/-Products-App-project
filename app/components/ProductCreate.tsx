@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import ProductsList from './ProductsList';
 import  FormattedProduct  from './ProductCreate';
 export type FormattedProduct = {
-  id: number;
+  id?: number; 
   title: string;
   price: number;
   description: string;
