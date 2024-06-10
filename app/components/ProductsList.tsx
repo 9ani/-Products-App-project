@@ -5,14 +5,14 @@ import { fetchProducts } from '../services/productsService';
 import { FormattedProduct } from './ProductCreate';
 
 interface Props {
-  newProduct: FormattedProduct | null; 
+  newProduct: FormattedProduct | null;
 }
 
 const ProductsList: React.FC<Props> = ({ newProduct }) => {
   const { data, error, isLoading, isError } = useQuery('products', fetchProducts);
 
   useEffect(() => {
-    
+
   }, [data]);
 
   if (isLoading) {

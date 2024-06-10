@@ -4,18 +4,18 @@ import axios from 'axios';
 import { useMutation } from 'react-query';
 import { useRouter } from 'next/navigation';
 import ProductsList from './ProductsList';
-import { FormattedProduct } from "./ProductCreate";
+import { FormattedProduct } from './ProductCreate';
 
-export const ProductCreate = () => {
-  const [title, setTitle] = useState('');
-  const [price, setPrice] = useState(0);
-  const [description, setDescription] = useState('');
+const ProductCreate: React.FC = () => {
+  const [title, setTitle] = useState<string>('');
+  const [price, setPrice] = useState<number>(0);
+  const [description, setDescription] = useState<string>('');
   const [image, setImage] = useState<File | null>(null);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [status, setStatus] = useState('');
-  const [loadedBytes, setLoadedBytes] = useState(0);
-  const [totalBytes, setTotalBytes] = useState(0);
-  const [showForm, setShowForm] = useState(false); 
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
+  const [status, setStatus] = useState<string>('');
+  const [loadedBytes, setLoadedBytes] = useState<number>(0);
+  const [totalBytes, setTotalBytes] = useState<number>(0);
+  const [showForm, setShowForm] = useState<boolean>(false);
   const router = useRouter();
 
   const [newProduct, setNewProduct] = useState<FormattedProduct | null>(null);
@@ -38,10 +38,14 @@ export const ProductCreate = () => {
     }
   };
 
-  const uploadFile = async (file: File) => {
+  const uploadFile = async (file: File | null) => {
+    if (!file) {
+      return null;
+    }
+
     const formData = new FormData();
     formData.append('file', file);
-  
+
     try {
       const response = await axios.post('https://api.escuelajs.co/api/v1/files/upload', formData, {
         headers: {
@@ -49,8 +53,7 @@ export const ProductCreate = () => {
         },
         onUploadProgress: (progressEvent) => {
           const loaded = progressEvent.loaded;
-          const total = progressEvent.total;
-          setLoadedBytes(loaded);
+          const total = progressEvent.total ?? 0;
           setTotalBytes(total);
           const percent = (loaded / total) * 100;
           setUploadProgress(Math.round(percent));
@@ -81,7 +84,7 @@ export const ProductCreate = () => {
     mutation.mutate(formattedProduct);
   };
 
-  const toggleForm = () => {
+  const toggleForm = (): void => {
     setShowForm(!showForm);
   };
 
@@ -95,34 +98,34 @@ export const ProductCreate = () => {
 
       {showForm && (
         <div className="max-w-md mx-auto bg-white shadow-md rounded-md p-4">
-        <h1 className="text-lg font-semibold mb-4">Create Product</h1>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block mb-1">Title</label>
-            <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} className="w-full border rounded-md px-3 py-2" required />
-          </div>
-          <div className="mb-4">
-            <label className="block mb-1">Price</label>
-            <input type="number" value={price} onChange={(e) => setPrice(Number(e.target.value))} className="w-full border rounded-md px-3 py-2" required />
-          </div>
-          <div className="mb-4">
-            <label className="block mb-1">Description</label>
-            <textarea value={description} onChange={(e) => setDescription(e.target.value)} className="w-full border rounded-md px-3 py-2" required />
-          </div>
-          <div className="mb-4">
-            <label className="block mb-1">Image</label>
-            <input type="file" onChange={handleFileChange} className="border" required />
-            {uploadProgress > 0 && (
-              <div className="mt-2">
-                <label>File progress: <progress value={uploadProgress} max="100" /></label>
-                <p>{status}</p>
-                <p>Uploaded {loadedBytes} bytes of {totalBytes}</p>
-              </div>
-            )}
-          </div>
-          <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Create Product</button>
-        </form>
-      </div>
+          <h1 className="text-lg font-semibold mb-4">Create Product</h1>
+          <form onSubmit={handleSubmit}>
+            <div className="mb-4">
+              <label className="block mb-1">Title</label>
+              <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} className="w-full border rounded-md px-3 py-2" required />
+            </div>
+            <div className="mb-4">
+              <label className="block mb-1">Price</label>
+              <input type="number" value={price} onChange={(e) => setPrice(Number(e.target.value))} className="w-full border rounded-md px-3 py-2" required />
+            </div>
+            <div className="mb-4">
+              <label className="block mb-1">Description</label>
+              <textarea value={description} onChange={(e) => setDescription(e.target.value)} className="w-full border rounded-md px-3 py-2" required />
+            </div>
+            <div className="mb-4">
+              <label className="block mb-1">Image</label>
+              <input type="file" onChange={handleFileChange} className="border" required />
+              {uploadProgress > 0 && (
+                <div className="mt-2">
+                  <label>File progress: <progress value={uploadProgress} max="100" /></label>
+                  <p>{status}</p>
+                  <p>Uploaded {loadedBytes} bytes of {totalBytes}</p>
+                </div>
+              )}
+            </div>
+            <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Create Product</button>
+          </form>
+        </div>
       )}
 
       {newProduct && <ProductsList newProduct={newProduct} />}
